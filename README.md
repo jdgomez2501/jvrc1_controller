@@ -27,7 +27,7 @@ The controller name is `JVRC1Controller`, this controller:
 
 ## Quick Start
 
-Quick start if you are used to work with mc_rtc_superbuild environment, you have a correct sourced terminal, and have a display interface like RVIZ already running to visualize the robot.
+Quick start if you are used to work with mc_rtc_superbuild environment and mc_rtc controllers. First launch your RVIZ interface and then:
 
 ```bash
 cd <workspace>
@@ -43,9 +43,11 @@ source <workspace>/install/setup_mc_rtc.sh
 mc_rtc_ticker -f <workspace>/install/lib/mc_controller/etc/JVRC1Controller.yaml
 ```
 
+If you encounter any issues please foloow the step-by-step installation.
+
 ## Step-by-Step installation
 
-This is the recommended installation path if you already use `mc_rtc_superbuild` in your machine. If you do not, please follow the instructions in the official repo [here](https://github.com/mc-rtc/mc-rtc-superbuild) to install it and have your environment ready before installing the controller.
+This is process assumes you already have `mc_rtc_superbuild` in your machine. If you do not, please follow the instructions in the official repo [here](https://github.com/mc-rtc/mc-rtc-superbuild) to install it and have your environment ready before installing this controller.
 
 ### 1) Place the controller in your workspace
 
@@ -64,7 +66,7 @@ git clone https://github.com/jdgomez2501/jvrc1_controller.git
 ```
 
 Adjust the path if your superbuild uses a different workspace layout.
-All the instructions here will use the workspace path `/home/vscode/workspace` if you have a different one you must adjust it.
+All the instructions here will use the workspace path `/home/vscode/workspace`. If you have a different one you must adjust it.
 
 ### 2) Building and using the controller
 
