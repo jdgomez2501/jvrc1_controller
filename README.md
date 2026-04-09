@@ -27,7 +27,7 @@ The controller name is `JVRC1Controller`, this controller:
 
 ## Quick Start
 
-Quick start if you are used to work with mc_rtc_superbuild environment and have a display interface like RVIZ already running
+Quick start if you are used to work with mc_rtc_superbuild environment, you have a correct sourced terminal, and have a display interface like RVIZ already running to visualize the robot.
 
 ```bash
 cd <workspace>
@@ -80,15 +80,7 @@ make install
 #Note: if mc_rtc is installed in a privileged directory sudo is required
 ```
 
-### 3) Source the environment
-
-Source the setup file produced when building mc_rtc_superbuild, usually you already added this to your .zshrc file as recommended after building mc_rtc_superbuild, if not, you can do it manually running for example:
-
-```bash
-source /home/vscode/workspace/install/setup_mc_rtc.sh #or adjust to <path_to_your_workspace>/install/setup_mc_rtc.sh 
-```
-
-### 4) Start RViz
+### 3) Start RViz
 
 Make sure your ROS 2 environment is sourced before launching RViz. Then, use the launch command:
 
@@ -97,9 +89,15 @@ Make sure your ROS 2 environment is sourced before launching RViz. Then, use the
 ros2 launch mc_rtc_ticker display.launch
 ```
 
-### 5) Run the controller with its custom config
+### 4) Run the controller with its custom config
 
-In another terminal properly sourced, run the controller with the path of the config file created previosuly when building and installing. The configuration file must be specified, otherwise the controller will not be loaded.
+First make sure you have sourced your environment to work with mc_rtc, usually you have already added this to your .zshrc file as recommended after building mc_rtc_superbuild, if not, you can do it manually running:
+
+```bash
+source /home/vscode/workspace/install/setup_mc_rtc.sh #or adjust to <path_to_your_workspace>/install/setup_mc_rtc.sh 
+```
+
+Now, let's run the `mc_rtc_tciker` with our controller specifying the path of the config file created previosuly when building and installing. The configuration file must be specified, otherwise the controller will not be loaded. The configuration file will be located by default in `<workspace>/install/lib/mc_controller/etc/JVRC1Controller.yaml` so to run the controller you execute:
 
 ```bash
 mc_rtc_ticker -f /home/vscode/workspace/install/lib/mc_controller/etc/JVRC1Controller.yaml
