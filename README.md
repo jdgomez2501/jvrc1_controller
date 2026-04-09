@@ -35,13 +35,13 @@ Clone this repository inside the `workspace/` directory of your `mc_rtc_superbui
 ```bash
 cd <path_to_your_workspace>
 #For example cd ~/mc_rtc_superbuild/workspace
-git clone <your-repo-url> jvrc1_controller
+git clone https://github.com/jdgomez2501/jvrc1_controller.git
 ```
 Adjust the path if your superbuild uses a different workspace layout.
 
 ### 2) Building and using the controller (Standalone setup)
 
-After cloning the repository inside the `workspace` folder of `mc_rtc_superbuild`, build and install the controller:
+After cloning the repository inside the `workspace`, build and install the controller:
 
 ```bash
 cd <path_to_your_workspace>/jvrc1_controller
@@ -55,12 +55,11 @@ make install
 
 ### 3) Source the environment
 
-Source the setup file produced by your build, usually you already added this to your .zshrc file as recommended after building mc_rtc_superbuild, if not, you can do it manually running for example:
+Source the setup file produced when building mc_rtc_superbuild, usually you already added this to your .zshrc file as recommended after building mc_rtc_superbuild, if not, you can do it manually running for example:
 
 ```bash
 source <path_to_your_workspace>/install/setup_mc_rtc.sh
 ```
-
 
 ### 4) Start RViz
 
@@ -73,32 +72,40 @@ ros2 launch mc_rtc_ticker display.launch
 
 ### 5) Run the controller with its custom config
 
+In another terminal properly sourced, run the controller with the path of the config file created previosuly when building and installing. It is a MUST to specify this config file, otherwise the controller will not be loaded
+
 ```bash
 mc_rtc_ticker -f <path_to_your_workspace>/install/lib/mc_controller/etc/JVRC1Controller.yaml
 # For example mc_rtc_ticker -f /home/vscode/workspace/install/lib/mc_controller/etc/JVRC1Controller.yaml
 # Or mc_rtc_ticker -f ~/mc_rtc_superbuild/workspace/install/lib/mc_controller/etc/JVRC1Controller.yaml
 ```
-
 The `-f` option lets mc_rtc_ticker load a specific mc_rtc configuration file.
 
+In case of having problems finding your installed config file you can use directly the template included in the source file by running this:
+
+```bash
+mc_rtc_ticker -f <path_to_your_workspace>/jvrc1_controller/etc/JVRC1Controller.in.yaml
+```
 ## Expected behavior
 
 The controller repeats the following sequence:
 
-1. move the left hand to the target pose,
-2. bring the left hand back,
-3. move the right hand to the target pose,
-4. bring the right hand back,
-5. move both hands to their targets,
-6. bring both hands back,
-7. repeat.
+1. The left-hand moves to (0.5, 0.25, 1.1) with orientation (0, 0.7, 0, 0.7) (w, x, y, z)
+2. The left-hand moves back to its initial position
+3. The right-hand moves to (0.5, -0.25, 1.1) with orientation (0, 0.7, 0, 0.7)
+4. The right-hand moves back to its initial position
+5. Both hands move to their respective specified position
+6. Both hands go back to their initial position
+7. Repeat
 
-When one hand is moving, the robot looks at the moving hand. When both hands move, the robot looks forward.
+While a single hand is moving the robot should look at the moving hand, when both hands are moving the robot should look forward
+
 
 ## Notes
 
 - The controller is written in C++ and uses mc_rtc tasks and constraints.
 - Configuration values are loaded from the YAML file instead of being hardcoded.
+- These values were tunned by experimentation to have an acceptable trade-off between good trade-off between target tracking and stability. These values can be further tuned to achieve better performance, but they are good enough for the current application.
 
 ## Video
 
