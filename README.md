@@ -4,11 +4,12 @@ A C++ mc_rtc controller for the JVRC-1 humanoid robot.
 
 ## Overview
 
-This controller:
+The controller name is `JVRC1Controller`, this controller:
+
 - Keeps the left and right feet in contact with the ground,
 - Enforces self-collision avoidance, joint limits, and equations of motion,
 - Moves the left hand and right hand through a repeating sequence,
-- Implements a lookAt task to follow hands trajectory.
+- Implements a lookAt task to look at moving and static targets.
 
 ## Repository layout
 
@@ -27,6 +28,7 @@ This controller:
 ## Quick Start
 
 Quick start if you are used to work with mc_rtc_superbuild environment and have a display interface like RVIZ already running
+
 ```bash
 cd <workspace>
 git clone https://github.com/jdgomez2501/jvrc1_controller.git
@@ -132,5 +134,4 @@ While a single hand is moving the robot should look at the moving hand, when bot
 - Configuration values are loaded from the YAML file instead of being hardcoded.
 - These values were tunned by experimentation to have a reasonable trade-off between tracking performance and stability. These values can be further tuned to achieve better performance, but they are good enough for the current application.
 
-## Video
 
