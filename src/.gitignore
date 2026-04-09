@@ -1,0 +1,56 @@
+# Build artifacts
+build/
+build-*/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+Makefile
+install/
+devel/
+log/
+logs/
+
+# Compiler outputs
+*.o
+*.obj
+*.so
+*.a
+*.dll
+*.dylib
+*.exe
+*.out
+*.app
+*.lo
+
+# CMake / tooling
+CTestTestfile.cmake
+Testing/
+
+# ROS / catkin / colcon
+.catkin_tools/
+.catkin_workspace
+.pytest_cache/
+.ros/
+ros_ws/build/
+ros_ws/install/
+ros_ws/log/
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+*.orig
+
+# Docker / local environment files
+.env
+.env.*
