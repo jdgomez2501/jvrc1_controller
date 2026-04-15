@@ -27,27 +27,26 @@ The controller name is `JVRC1Controller`, this controller:
 
 ## Quick Start
 
-Quick start if you are used to work with mc_rtc_superbuild environment and mc_rtc controllers. First launch your RVIZ interface and then:
+Quick start if you are used to work with mc_rtc_superbuild environment and mc_rtc controllers, and you use CMake as your building tool. First launch your RVIZ interface and then:
 
 ```bash
 cd <workspace>
 git clone https://github.com/jdgomez2501/jvrc1_controller.git
 cd jvrc1_controller
-mkdir build && cd build
-cmake ../ -DCMAKE_BUILD_TYPE=RelWithDebInfo
-make
-make install
+cmake -S . -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo
+cmake --build build
+cmake --install build
 
 source <workspace>/install/setup_mc_rtc.sh
 
 mc_rtc_ticker -f <workspace>/install/lib/mc_controller/etc/JVRC1Controller.yaml
 ```
 
-If you encounter any issues please foloow the step-by-step installation.
+If you encounter any issues please follow the step-by-step installation.
 
 ## Step-by-Step installation
 
-This is process assumes you already have `mc_rtc_superbuild` in your machine. If you do not, please follow the instructions in the official repo [here](https://github.com/mc-rtc/mc-rtc-superbuild) to install it and have your environment ready before installing this controller.
+This process assumes you already have `mc_rtc_superbuild` in your machine. If you do not, please follow the instructions in the official repo [here](https://github.com/mc-rtc/mc-rtc-superbuild) to install it and have your environment ready before installing this controller.
 
 ### 1) Place the controller in your workspace
 
@@ -74,11 +73,9 @@ After cloning the repository inside the `workspace`, build and install the contr
 
 ```bash
 cd /home/vscode/workspace/jvrc1_controller #or adjust to <path_to_your_workspace>/jvrc1_controller
-mkdir -p build
-cd build
-cmake ../ -DCMAKE_BUILD_TYPE=RelWithDebInfo
-make
-make install
+cmake -S . -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo
+cmake --build build
+cmake --install build
 #Note: if mc_rtc is installed in a privileged directory sudo is required
 ```
 
