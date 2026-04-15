@@ -193,7 +193,6 @@ tolerance:
   lookAt: 0.05
 
 timing:
-  timeout: 10.0
   minStateTime: 0.05
   maxStateTime: 10.0
 ---

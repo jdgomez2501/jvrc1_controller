@@ -1,9 +1,11 @@
 #include "JVRC1Controller.h"
 
 JVRC1Controller::JVRC1Controller(mc_rbdyn::RobotModulePtr rm, double dt, const mc_rtc::Configuration & config)
-: mc_control::MCController(rm, dt)
+: mc_control::MCController(rm, dt, config)
 {
-  config_.load(config); //loading the yaml config to be used later
+  config_.load(config); //loading the yaml config to be used later, this config yaml is the sum of mc_rtc default config (etc/mc_rtc.yaml) 
+  // and the custom parameters I defined in my own yaml file (etc/JVRC1Controller.yaml), the values present in both files are overridden 
+  //by the ones in JVRC1Controller.yaml.
   timeStep = dt; // Getting the time step used by the controller
   minStateTime = config_("timing")("minStateTime"); // Getting the minimum time spent in each state from the config file
   maxStateTime = config_("timing")("maxStateTime"); // Getting the maximum time spent in each state from the config file
@@ -20,12 +22,15 @@ JVRC1Controller::JVRC1Controller(mc_rbdyn::RobotModulePtr rm, double dt, const m
   // ----------- POSTURE AND COM TASKS -----------
   // Posture task to maintain a natural posture and help with balance during the movements
   solver().addTask(postureTask);
-  const auto post_conf = config_("posture");
-  postureTask->stiffness(post_conf("stiffness"));
-  postureTask->weight(post_conf("weight"));
+  const double post_conf_stiffness = config_("posture")("stiffness");
+  const double post_conf_weight = config_("posture")("weight");
+  postureTask->stiffness(post_conf_stiffness);
+  postureTask->weight(post_conf_weight);
 
   // CoM task to control the center of mass, which is crucial for maintaining balance during the movements
-  const auto com_conf = config_("com");
+  const double com_dim_x = config_("com")("dim_weight")[0];
+  const double com_dim_y = config_("com")("dim_weight")[1];
+  const double com_dim_z = config_("com")("dim_weight")[2];
 
   /* I decided to modify the dim_weight of the CoM task to give some freedom in the motion, 
   which can help the solver find solutions that maintain balance while moving, 
@@ -34,20 +39,19 @@ JVRC1Controller::JVRC1Controller(mc_rbdyn::RobotModulePtr rm, double dt, const m
 
   const Eigen::Vector3d com_dim = 
     Eigen::Vector3d(
-      com_conf("dim_weight")[0],
-      com_conf("dim_weight")[1],
-      com_conf("dim_weight")[2]);
+      com_dim_x,
+      com_dim_y,
+      com_dim_z);
 
-  comTask = std::make_shared<mc_tasks::CoMTask>(robots(), 0, com_conf("stiffness"), com_conf("weight"));
+  comTask = std::make_shared<mc_tasks::CoMTask>(robots(), 0, config_("com")("stiffness"), config_("com")("weight"));
   solver().addTask(comTask);
   comTask->dimWeight(com_dim);
 
   //----------- HAND TASKS------------
-  const auto hands_target = config_("handsTarget");
 
   // LEFT HAND
-  const auto l_pos_conf = hands_target("lhand_position");
-  const auto l_quat_conf = hands_target("lhand_quaternion");
+  const std::vector<double> l_pos_conf = config_("handsTarget")("lhand_position");
+  const std::vector<double> l_quat_conf = config_("handsTarget")("lhand_quaternion");
 
   const Eigen::Vector3d l_pos(
     l_pos_conf[0],
@@ -63,9 +67,10 @@ JVRC1Controller::JVRC1Controller(mc_rbdyn::RobotModulePtr rm, double dt, const m
     l_quat.toRotationMatrix(),
     l_pos);
 
+
   // RIGHT HAND
-  const auto r_pos_conf = hands_target("rhand_position");
-  const auto r_quat_conf = hands_target("rhand_quaternion");
+  const std::vector<double> r_pos_conf = config_("handsTarget")("rhand_position");
+  const std::vector<double> r_quat_conf = config_("handsTarget")("rhand_quaternion");
 
   const Eigen::Vector3d r_pos(
     r_pos_conf[0],
@@ -83,17 +88,13 @@ JVRC1Controller::JVRC1Controller(mc_rbdyn::RobotModulePtr rm, double dt, const m
       r_pos
   );
 
-  const auto hands_conf = config_("hands");
-
-  leftHandTask = std::make_shared<mc_tasks::EndEffectorTask>("l_wrist", robots(), 0, hands_conf("stiffness"), hands_conf("weight"));
+  leftHandTask = std::make_shared<mc_tasks::EndEffectorTask>("l_wrist", robots(), 0, config_("hands")("stiffness"), config_("hands")("weight"));
   solver().addTask(leftHandTask);
 
-  rightHandTask = std::make_shared<mc_tasks::EndEffectorTask>("r_wrist", robots(), 0, hands_conf("stiffness"), hands_conf("weight"));
+  rightHandTask = std::make_shared<mc_tasks::EndEffectorTask>("r_wrist", robots(), 0, config_("hands")("stiffness"), config_("hands")("weight"));
   solver().addTask(rightHandTask);
 
   // ----------- LOOKAT TASK -----------
-  const auto lookAt_conf = config_("lookAt");
-  
   /* I am using depth camera frame for the lookat task since it is located 
   between the eyes and gives a better representation of the robot's gaze direction */
   const std::string cameraFrame = "dcamera";
@@ -108,18 +109,18 @@ JVRC1Controller::JVRC1Controller(mc_rbdyn::RobotModulePtr rm, double dt, const m
       lookForwardTarget,           // initial target position
       robots(),                    // robots
       0,                           // robot index
-      lookAt_conf("stiffness"),
-      lookAt_conf("weight")
+      config_("lookAt")("stiffness"),
+      config_("lookAt")("weight")
   );
 
   solver().addTask(lookAtTask);
 
   //----------- TOLERANCES -----------
-  const auto tolerance_conf = config_("tolerance");
-  tol_conf.forward = tolerance_conf("forward");
-  tol_conf.back = tolerance_conf("back");
-  tol_conf.both = tolerance_conf("both");
-  tol_conf.lookAt = tolerance_conf("lookAt");
+
+  tol_conf.forward = config_("tolerance")("forward");
+  tol_conf.back = config_("tolerance")("back");
+  tol_conf.both = config_("tolerance")("both");
+  tol_conf.lookAt = config_("tolerance")("lookAt");
 
   mc_rtc::log::success("JVRC1Controller init done ");
 
